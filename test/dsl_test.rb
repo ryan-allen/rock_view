@@ -1,9 +1,4 @@
-require 'rubygems'
-require 'mocha'
-require 'stubba'
-require 'test/unit'
-
-require '../cview'
+require "#{File.dirname(__FILE__)}/test_runner"
 
 module Site
   class Layout < CView::Template
