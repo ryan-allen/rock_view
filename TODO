@@ -1,0 +1,9 @@
+[ ] resolve via subclasses instead of constants?
+[ ] strict assigns
+[ ] ability to scope resolve (i.e. scope 'flashden' do render 'layout')
+[ ] better exceptions on unhandled method
+[ ] readme!
+[ ] loader!
+[ ] load into scope (i.e load path X into scope Views)
+[ ] default scope (i.e. dfault scope Views resolve('blah') looks for Views::Blah)
+[ ] page, element, component?

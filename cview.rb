@@ -50,7 +50,7 @@ module CView
     end
     
     def method_missing(method, *args)
-      @assigns.has_key?(method) ? erb(@assigns[method].to_s) : (parent ? parent.send(method, *args) : super)
+      @assigns.has_key?(method) ? (@assigns[method].nil? ? nil : erb(@assigns[method].to_s)) : (parent ? parent.send(method, *args) : super)
     end
     
     def render(path, assigns = {})
@@ -103,6 +103,58 @@ module CView
       
     end
     
-  end  
+  end
+  
+  class Loader
+    
+    class << self
+      
+      def load(path)
+        traverse(path)
+      end
+      
+    private
+
+      def traverse(path, scope = nil)
+        for entry in Dir.entries(path)
+          next if entry[0].chr == '.'
+          full_path = "#{path}/#{entry}"
+          if File.directory?(full_path)
+            create_class(generate_scope(scope, entry))
+            traverse(full_path, generate_scope(scope, entry))
+          else
+            handle(generate_scope(scope, entry), full_path)
+          end
+        end  
+      end
+
+      def generate_scope(scope, path)
+        scope ? "#{scope}/#{path}" : path
+      end
+
+      def handle(path, full_path)
+        create_class(path)
+        /(\.\w+)$/ =~ path
+        case $1
+        when '.rb'
+          get_class(path).class_eval { eval(open(full_path, 'r') { |f| f.read }) }
+        when '.rhtml'
+          get_class(path).template = open(full_path, 'r') { |f| f.read }
+        else
+          raise "Can't Handle #{$1}"
+        end  
+      end
+
+      def create_class(path)
+        Object.class_eval("class #{path.gsub(/\.\w+$/, '').classify} < CView::Template; end")
+      end
+      
+      def get_class(path)
+        path.gsub(/\.\w+$/, '').classify.constantize
+      end
+            
+    end
+    
+  end
     
 end

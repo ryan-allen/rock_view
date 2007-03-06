@@ -52,9 +52,10 @@ class TemplateTest < Test::Unit::TestCase
   end
   
   def test_assigns_are_acessable_as_methods
-    template = CView::Template.new(:one => 1, :two => 2)
+    template = CView::Template.new(:one => 1, :two => 2, :a_nil => nil)
     assert_equal '1', template.one
     assert_equal '2', template.two
+    assert_equal nil, template.a_nil
   end
   
   def test_to_s_evaluates_erb_template
