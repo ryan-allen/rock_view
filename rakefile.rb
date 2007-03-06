@@ -1,5 +1,7 @@
 task :default => [:test]
 
 task :test do
-  ruby 'test/test_runner.rb'
+  require 'test/template_test.rb'
+  require 'test/dsl_test.rb'
+  require 'test/loader_test.rb'
 end

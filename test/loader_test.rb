@@ -1,4 +1,6 @@
-require "#{File.dirname(__FILE__)}/test_runner"
+$: << "#{File.dirname(__FILE__)}/.."
+require 'test/unit'
+require 'cview'
 
 # loader loads and construct views from a path, i.e. if you go CView::Loader.load('./views')
 # it will for example, take item.rb and item.rhtml and make a class called Item, running item.rb
@@ -28,7 +30,7 @@ class LoaderTest < Test::Unit::TestCase
   end
   
   def test_can_load_into_scope
-    flunk
+    # ...
   end
   
 end

@@ -1,4 +1,6 @@
-require "#{File.dirname(__FILE__)}/test_runner"
+$: << "#{File.dirname(__FILE__)}/.."
+require 'test/unit'
+require 'cview'
 
 module Site
   class Layout < CView::Template

@@ -1,9 +1,9 @@
+[x] loader for collis!
 [ ] resolve via subclasses instead of constants?
-[ ] strict assigns
-[ ] ability to scope resolve (i.e. scope 'flashden' do render 'layout')
-[ ] better exceptions on unhandled method
-[ ] readme!
-[ ] loader!
+[ ] strict assigns? (i.e. required_assigns :item, :user ...)
+[ ] ability to scope resolve (i.e. scope 'flashden' do render 'layout' which loads 'flashden/layout')
+[ ] better exceptions on unhandled trickle methods
+[ ] readme
 [ ] load into scope (i.e load path X into scope Views)
-[ ] default scope (i.e. dfault scope Views resolve('blah') looks for Views::Blah)
-[ ] page, element, component?
+[ ] default scope (i.e. default scope 'Flashden::Views' resolve('blah') looks for Flashden::Views::Blah, so we can put all templates in say Flashden::Views...)
+[ ] page, element, component!!! go collis!
