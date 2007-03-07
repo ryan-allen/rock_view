@@ -7,3 +7,4 @@
 [ ] load into scope (i.e load path X into scope Views)
 [ ] default scope (i.e. default scope 'Flashden::Views' resolve('blah') looks for Flashden::Views::Blah, so we can put all templates in say Flashden::Views...)
 [ ] page, element, component!!! go collis!
+[ ] does every view have it's own css? how about cview compile::css, same for js? cview::compile::js ?? ooh shit

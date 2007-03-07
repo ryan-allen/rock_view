@@ -56,7 +56,7 @@ module CView
     def render(path, assigns = {})
       if klass = self.class.resolve(path)
         template = klass.new(assigns)
-        template.parent = self; self.sub_templates << template # duplication here?
+        template.parent = self
         template.to_s
       else
         raise "Cannot resolve '#{path}'"

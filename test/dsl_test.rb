@@ -4,7 +4,7 @@ require 'cview'
 
 module Site
   class Layout < CView::Template
-    self.template = '<html><%= render_sub_templates %></html>'
+    self.template = "<html><%= render 'site/heading', :heading => domain.upcase %><%= render_sub_templates %></html>"
   end
   class Heading < CView::Template
     self.template = '<h1><%= heading %></html>'
@@ -24,9 +24,8 @@ class DSLTest < Test::Unit::TestCase
   def test_dsl
     result = CView.construct do
       render 'site/layout', :domain => 'yeahnah.org' do
-        render 'site/heading', :heading => '<%= domain.upcase %>'
         render 'site/page'
-        render 'site/footer', :contact => 'ryan@yeahnah.org'
+        render 'site/footer', :contact => "<%= 'RYan@yeahnah.ORG'.downcase %>"
       end
     end
     assert_equal "<html><h1>YEAHNAH.ORG</html><div id=\"content\">Welcome to yeahnah.org!</div><div id=\"footer\">ryan@yeahnah.org</div></html>", result
