@@ -124,5 +124,12 @@ class TemplateTest < Test::Unit::TestCase
     assert_raises(NoMethodError) { Node.new.something_is_wrong! }
   end
   
+  def test_template_can_be_overriden_per_instance
+    greeter = Greeter.new
+    assert_equal 'Hello <%= name %>.', greeter.template
+    greeter.template = 'Hi <%= name %>.'
+    assert_equal 'Hi <%= name %>.', greeter.template
+  end
+  
 end
 

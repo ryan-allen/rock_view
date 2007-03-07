@@ -49,15 +49,42 @@ module CView
       @sub_templates = []
     end
     
+    def template
+      @template ? @template : self.class.template
+    end
+    
+    def template=(erb)
+      @template = erb
+    end
+    
     def method_missing(method, *args)
       @assigns.has_key?(method) ? (@assigns[method].nil? ? nil : erb(@assigns[method].to_s)) : (parent ? parent.send(method, *args) : super)
     end
     
-    def render(path, assigns = {})
+    def render(path, assigns = {}, &erb)
       if klass = self.class.resolve(path)
-        template = klass.new(assigns)
-        template.parent = self
-        template.to_s
+        if erb
+          #
+          # oh my god this is a huge hack, sub templates in this context have
+          # no access to uh, parents or something...
+          #
+          template = klass.new(assigns)
+          split = Template.new
+          split.template = '##SPLIT##'
+          split.parent = template; template.sub_templates << split
+          rendered_template = template.to_s
+          top, bottom = rendered_template.split('##SPLIT##')
+          eval("_erbout", erb.binding).concat(top)
+          erb.call()
+          eval("_erbout", erb.binding).concat(bottom)
+        else
+          #
+          # this is the plain old good rendering method :D
+          #
+          template = klass.new(assigns)
+          template.parent = self
+          template.to_s
+        end
       else
         raise "Cannot resolve '#{path}'"
       end
@@ -68,13 +95,13 @@ module CView
     end
     
     def to_s
-      erb(self.class.template)
+      erb(template)
     end
     
   protected
   
-    def erb(template)
-      ERB.new(template, nil, '<>').result(binding)
+    def erb(str)
+      ERB.new(str, nil, '<>').result(binding)
     end
     
   end
