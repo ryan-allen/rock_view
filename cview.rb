@@ -13,17 +13,20 @@ module CView
   end
   
   class Template
+    
+    class MissingAssignException < Exception; end
+    class UnexpectedAssignException < Exception; end
 
     class << self
 
-      def template=(erb)
-        @@template||= {}
-        @@template[self] = erb
-      end
-
-      def template
-        for klass in superclasses_with_self
-          return @@template[klass] if @@template[klass]
+      def template(erb = nil)
+        if erb
+          @@template||= {}
+          @@template[self] = erb
+        else
+          for klass in superclasses_with_self
+            return @@template[klass] if @@template[klass]
+          end
         end
       end
       
@@ -36,20 +39,34 @@ module CView
       def superclasses_with_self
         superclass.respond_to?(:superclasses_with_self) ? [self] + superclass.superclasses_with_self : [Template]
       end
+              
+      def assign(name, opts = {})
+        attr_accessor name; @assigns ||= []; assigns << name
+        defaults[name] = opts[:default] if opts[:default]
+        expectations[name] = opts[:expects] if opts[:expects]
+      end
+      
+      def assigns(*names)
+        names.empty? ? (@assigns ||= []) : names.each { |name| assign name }
+      end
+      
+      def defaults; @defaults ||= {}; end
+      def expectations; @expectations ||= {}; end
       
     end
     
     attr_accessor :parent
     attr_reader :sub_templates
     
-    self.template = '<%= inspect %>'
+    template '<%= inspect %>'
     
     def initialize(assigns = {})
-      @assigns = assigns
+      self.class.defaults.each { |name, value| send "#{name}=", value }
+      assigns.each { |name, value| send "#{name}=", value }
       @sub_templates = []
     end
     
-    def template
+    def template(erb = nil)
       @template ? @template : self.class.template
     end
     
@@ -58,7 +75,7 @@ module CView
     end
     
     def method_missing(method, *args)
-      @assigns.has_key?(method) ? (@assigns[method].nil? ? nil : erb(@assigns[method].to_s)) : (parent ? parent.send(method, *args) : super)
+      parent ? parent.send(method, *args) : super
     end
     
     def render(path, assigns = {}, &erb)
@@ -95,7 +112,15 @@ module CView
     end
     
     def to_s
-      erb(template)
+      missing_assigns = self.class.assigns.select { |name| send(name).nil? }
+      unexpected_assigns = self.class.expectations.select { |name, values| !values.include?(send(name)) }
+      if not missing_assigns.empty?
+        raise MissingAssignException.new("#{self.class} was missing the following assigns: #{missing_assigns.join(', ')}")        
+      elsif not unexpected_assigns.empty?
+        raise UnexpectedAssignException.new("Aie!")        
+      else
+        erb(template)
+      end
     end
     
   protected
@@ -108,7 +133,7 @@ module CView
   
   class DSL < Template
         
-    self.template = '<%= render_sub_templates %>'
+    template '<%= render_sub_templates %>'
         
     class << self
       
@@ -166,7 +191,7 @@ module CView
         when '.rb'
           get_class(path).class_eval { eval(open(full_path, 'r') { |f| f.read }) }
         when '.rhtml'
-          get_class(path).template = open(full_path, 'r') { |f| f.read }
+          get_class(path).template open(full_path, 'r') { |f| f.read }
         else
           raise "Can't Handle #{$1}"
         end  

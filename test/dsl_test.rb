@@ -4,19 +4,22 @@ require 'cview'
 
 module Site
   class Layout < CView::Template
-    self.template = "<html><%= render 'site/heading', :heading => domain.upcase %><%= render_sub_templates %></html>"
+    assigns :domain
+    template "<html><%= render 'site/heading', :heading => domain.upcase %><%= render_sub_templates %></html>"
   end
   class Heading < CView::Template
-    self.template = '<h1><%= heading %></html>'
+    assigns :heading
+    template '<h1><%= heading %></html>'
   end
   class Sidebar < CView::Template
-    self.template = '<div id="sidebar"><%= render_sub_templates %></div>'
+    template '<div id="sidebar"><%= render_sub_templates %></div>'
   end
   class Page < CView::Template
-    self.template = '<div id="content">Welcome to <%= domain %>!</div><% render \'site/sidebar\' do %>I AM SIDEBAR!<% end %>'
+    template '<div id="content">Welcome to <%= domain %>!</div><% render \'site/sidebar\' do %>I AM SIDEBAR!<% end %>'
   end
   class Footer < CView::Template
-    self.template = '<div id="footer"><%= contact %></div>'
+    assigns :contact
+    template '<div id="footer"><%= contact %></div>'
   end
 end
 
@@ -31,6 +34,6 @@ class DSLTest < Test::Unit::TestCase
         render 'site/footer', :contact => "<%= 'RYan@yeahnah.ORG'.downcase %>"
       end
     end
-    assert_equal "<html><h1>YEAHNAH.ORG</html><div id=\"content\">Welcome to yeahnah.org!</div><div id=\"sidebar\">I AM SIDEBAR!</div><div id=\"footer\">ryan@yeahnah.org</div></html>", result
+    assert_equal "<html><h1>YEAHNAH.ORG</html><div id=\"content\">Welcome to yeahnah.org!</div><div id=\"sidebar\">I AM SIDEBAR!</div><div id=\"footer\"><%= 'RYan@yeahnah.ORG'.downcase %></div></html>", result
   end
 end

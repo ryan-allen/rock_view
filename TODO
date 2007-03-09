@@ -1,10 +1,39 @@
-[x] loader for collis!
-[ ] resolve via subclasses instead of constants?
-[ ] strict assigns? (i.e. required_assigns :item, :user ...)
+IMPORTANT
+
+[x] remove erb evaluation from assigns
+[x] change self.template = 'blah' to template 'blah'
+[x] assigns :one, :two, :three
+[x] assign :one, :default => 1
+[x] assign :one, :expects => [1,2,3]
+[x] assign :one, :default => 0, :expects => [1,2,3]
+
+the last three will fix the problem we're having assigning tabs and trickling and etc
+
+[ ] mix in rails helpers
+[ ] @controller ...
+
+assigns
+
+FLASHDEN
+
+[x] organise into app/cviews
+[x] put cview into vendor & load from environment.rb
+[x] set up loading of templates from dispatcher thingy
+[ ] new test framework + test stubs
+[ ] controller methods for layout context
+[ ] try it out!
+
+USEFUL
+
 [ ] ability to scope resolve (i.e. scope 'flashden' do render 'layout' which loads 'flashden/layout')
 [ ] better exceptions on unhandled trickle methods
 [ ] readme
+[x] page, element, component!!! go collis! (this is the blog post thingy)
 [ ] load into scope (i.e load path X into scope Views)
+[ ] refactor template test and template class
+
+TRIVIAL
+
+[ ] resolve via subclasses instead of constants?
 [ ] default scope (i.e. default scope 'Flashden::Views' resolve('blah') looks for Flashden::Views::Blah, so we can put all templates in say Flashden::Views...)
-[ ] page, element, component!!! go collis!
 [ ] does every view have it's own css? how about cview compile::css, same for js? cview::compile::js ?? ooh shit
