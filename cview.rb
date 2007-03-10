@@ -60,7 +60,8 @@ module CView
     
     template '<%= inspect %>'
     
-    def initialize(assigns = {})
+    def initialize(assigns = {}, parent = nil)
+      self.parent = parent
       self.class.defaults.each { |name, value| send "#{name}=", value }
       assigns.each { |name, value| send "#{name}=", value }
       @sub_templates = []
@@ -144,7 +145,7 @@ module CView
       end
       
       def render(path, assigns = {}, &renders)
-        template = Template.resolve(path).new(assigns)
+        template = Template.resolve(path).new(assigns, @scope.last)
         template.parent = @scope.last; @scope.last.sub_templates << template # duplication here?
         if renders
           @scope << template

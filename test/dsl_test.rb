@@ -29,8 +29,8 @@ end
 class DSLTest < Test::Unit::TestCase
   def test_dsl
     result = CView.construct do
-      render 'site/layout', :domain => 'yeahnah.org' do
-        render 'site/page'
+      render 'site/layout' do
+        render 'site/page', :domain => 'yeahnah.org'
         render 'site/footer', :contact => "<%= 'RYan@yeahnah.ORG'.downcase %>"
       end
     end
