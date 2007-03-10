@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'active_support'
 require 'erb'
+require 'pathname'
 
 module CView
   
@@ -171,7 +172,7 @@ module CView
       def traverse(path, scope = nil)
         for entry in Dir.entries(path)
           next if entry[0].chr == '.'
-          full_path = "#{path}#{File::SEPARATOR}#{entry}"
+          full_path = "#{path}/#{entry}"
           if File.directory?(full_path)
             create_class(generate_scope(scope, entry))
             traverse(full_path, generate_scope(scope, entry))
@@ -182,7 +183,7 @@ module CView
       end
 
       def generate_scope(scope, path)
-        scope ? "#{scope}#{File::SEPARATOR}#{path}" : path
+        scope ? "#{scope}/#{path}" : path
       end
 
       def handle(path, full_path)
@@ -190,9 +191,9 @@ module CView
         /(\.\w+)$/ =~ path
         case $1
         when '.rb'
-          get_class(path).class_eval { eval(open(full_path, 'r') { |f| f.read }) }
+          get_class(path).class_eval { eval(Pathname.new(full_path).open('r') { |f| f.read }) }
         when '.rhtml'
-          get_class(path).template open(full_path, 'r') { |f| f.read }
+          get_class(path).template Pathname.new(full_path).open('r') { |f| f.read }
         else
           raise "Can't Handle #{$1}"
         end  
