@@ -171,7 +171,7 @@ module CView
       def traverse(path, scope = nil)
         for entry in Dir.entries(path)
           next if entry[0].chr == '.'
-          full_path = "#{path}/#{entry}"
+          full_path = "#{path}#{File::SEPARATOR}#{entry}"
           if File.directory?(full_path)
             create_class(generate_scope(scope, entry))
             traverse(full_path, generate_scope(scope, entry))
@@ -182,7 +182,7 @@ module CView
       end
 
       def generate_scope(scope, path)
-        scope ? "#{scope}/#{path}" : path
+        scope ? "#{scope}#{File::SEPARATOR}#{path}" : path
       end
 
       def handle(path, full_path)
