@@ -1,6 +1,6 @@
 MISC
 
-[ ] rails helpers (i.e. controller methods, )
+[x] rails helpers (i.e. controller methods, )
 [ ] ability to scope resolve (i.e. scope 'flashden' do render 'layout' which loads 'flashden/layout')
 [ ] better exceptions on unhandled trickle methods
 [ ] README w/ elaboration on element/layout/scope, usage patterns (composition, chain of responsibility)
@@ -12,4 +12,4 @@ MISC
 
 BUGS
 
-[ ] need to make :default => nil work
+[x] need to make :default => nil work

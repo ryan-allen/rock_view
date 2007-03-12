@@ -52,6 +52,10 @@ end
 class Node < CView::Template
   assign :position
 end
+
+class AssignDefaultIsNil < CView::Template
+  assign :is_nil, :default => nil
+end
   
 # template is the actual erb template, it can render templates inside of it
 # with it's special context and render thingy or something, assigns are shared
@@ -81,9 +85,13 @@ class TemplateTest < Test::Unit::TestCase
     assert_equal 'Red', template.colour
   end
   
-  def test_to_s_raises_exception_when_assign_is_missing
+  def test_to_s_raises_exception_when_assign_is_nil
     template = Person.new
     assert_raises(CView::Template::MissingAssignException) { template.to_s }
+  end
+  
+  def test_to_s_doesnt_raise_exception_when_assign_is_nil_but_default_is_nil
+    assert_nothing_raised { AssignDefaultIsNil.new.to_s }
   end
   
   def test_to_s_raises_exception_when_assign_vaule_is_not_in_expected

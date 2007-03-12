@@ -43,7 +43,7 @@ module CView
               
       def assign(name, opts = {})
         attr_accessor name; @assigns ||= []; assigns << name
-        defaults[name] = opts[:default] if opts[:default]
+        defaults[name] = opts[:default] if opts.has_key?(:default)
         expectations[name] = opts[:expects] if opts[:expects]
       end
       
@@ -114,7 +114,7 @@ module CView
     end
     
     def to_s
-      missing_assigns = self.class.assigns.select { |name| send(name).nil? }
+      missing_assigns = self.class.assigns.select { |name| send(name).nil? and not self.class.defaults.has_key?(name) }
       unexpected_assigns = self.class.expectations.select { |name, values| !values.include?(send(name)) }
       if not missing_assigns.empty?
         raise MissingAssignException.new("#{self.class} was missing the following assigns: #{missing_assigns.join(', ')}")        
@@ -195,7 +195,7 @@ module CView
         when '.rhtml'
           get_class(path).template Pathname.new(full_path).open('r') { |f| f.read }
         else
-          raise "Can't Handle #{$1}"
+          raise "Can't Handle: #{$1.inspect} #{full_path.inspect}"
         end  
       end
 
