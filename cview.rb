@@ -11,6 +11,10 @@ module CView
       DSL.construct(&renders)
     end
     
+    def reset!
+      Object.remove_subclasses_of(Template)
+    end
+    
   end
   
   class Template

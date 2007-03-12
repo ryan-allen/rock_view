@@ -7,10 +7,15 @@ require 'cview'
 # in context of the class and setting the template class var to string content of item.rhtml
 # it also looks in subdirs and maps correctly, i.e. item/files/preview.rb will create Item::Files::Preview
 # which is accessible with CView::Template.resolve('item/files/preview')
-
-CView::Loader.load("#{File.dirname(__FILE__)}/templates_to_load")
-
 class LoaderTest < Test::Unit::TestCase
+  
+  def setup
+    CView::Loader.load("#{File.dirname(__FILE__)}/templates_to_load")
+  end
+  
+  def teardown
+    CView.reset!
+  end
   
   def test_generates_classes
     assert_equal Item, CView::Template.resolve('item')

@@ -1,61 +1,6 @@
 $: << "#{File.dirname(__FILE__)}/.."
 require 'test/unit'
 require 'cview'
-
-class Greeter < CView::Template
-  assign :name
-  template 'Hello <%= name %>.'
-end
-
-class BetterGreeter < Greeter
-end
-
-module Sub
-  class Page < CView::Template
-    assign :title
-    template '<h1><%= title %></h1><%= render_sub_templates %>'
-    class Part < CView::Template
-      assign :description
-      template '<div><%= description %></div>'
-    end
-  end
-end
-
-# composition is fully qualified... not sure how to use this in the future...
-# we could deal with scoping by traversing subclasses in the future, i think...
-class Container < CView::Template
-  template "<container><%= render 'container/bit', :name => 1, :container => 'container' %><%= render 'container/bit', :name => 2, :container => 'container' %></container>"
-  class Bit < CView::Template
-    assigns :name, :container
-    template '<bit><%= name %> in <%= container %></bit>'
-  end
-end
-class BitUser < CView::Template
-  assign :name
-  template "<bit_user><%= render 'container/bit', :name => 1, :container => name %><%= render 'container/bit', :name => 2, :container => name %></bit_user>"
-end
-
-class RudeGreeter < CView::Template
-  assign :name
-  template 'Piss off <%= name %>!'
-end
-
-class Person < CView::Template
-  assigns :name, :age
-  assign :colour, :default => 'Red'
-  assign :gender, :expects => ['M', 'F']
-end
-
-class RootNode < CView::Template
-  assign :root
-end
-class Node < CView::Template
-  assign :position
-end
-
-class AssignDefaultIsNil < CView::Template
-  assign :is_nil, :default => nil
-end
   
 # template is the actual erb template, it can render templates inside of it
 # with it's special context and render thingy or something, assigns are shared
@@ -64,6 +9,21 @@ end
 # they render by providing references to their parent 'context' and any templates in
 # their 'sub_context', assigns tehrefore can be mauled until we call the big old 'to_s'...
 class TemplateTest < Test::Unit::TestCase
+  
+  def setup
+    load "#{File.dirname(__FILE__)}/template_test_templates.rb"
+  end
+  
+  def teardown
+    CView.reset!
+  end
+  
+  def test_reset_removes_template_constants
+    assert defined?(Greeter)
+    CView.reset!
+    assert !defined?(Greeter)
+  end
+  
   def test_can_get_raw_erb_from_template
     assert_equal 'Hello <%= name %>.', Greeter.template
     assert_equal 'Piss off <%= name %>!', RudeGreeter.template
