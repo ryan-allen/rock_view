@@ -19,9 +19,11 @@ class TemplateTest < Test::Unit::TestCase
   end
   
   def test_reset_removes_template_constants
-    assert defined?(Greeter)
+    assert defined?(Greeter), 'Greeter should be defined'
+    assert defined?(CView::DSL), 'DSL should be defined'
     CView.reset!
-    assert !defined?(Greeter)
+    assert !defined?(Greeter), 'Greeter should not exist'
+    assert defined?(CView::DSL), 'DSL should still be defined'
   end
   
   def test_can_get_raw_erb_from_template

@@ -12,7 +12,8 @@ module CView
     end
     
     def reset!
-      Object.remove_subclasses_of(Template)
+      templates_to_remove = Object.subclasses_of(Template) - [DSL]
+      Object.remove_class(*templates_to_remove)
     end
     
   end
