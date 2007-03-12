@@ -1,15 +1,11 @@
-MISC
-
-[x] rails helpers (i.e. controller methods, )
-[ ] ability to scope resolve (i.e. scope 'flashden' do render 'layout' which loads 'flashden/layout')
-[ ] better exceptions on unhandled trickle methods
-[ ] README w/ elaboration on element/layout/scope, usage patterns (composition, chain of responsibility)
-[ ] load into scope (i.e load path X into scope Views)
-[ ] refactor big time!!! (tests too!)
-[ ] resolve via subclasses instead of constants?
-[ ] default scope (i.e. default scope 'Flashden::Views' resolve('blah') looks for Flashden::Views::Blah, so we can put all templates in say Flashden::Views...)
-[ ] does every view have it's own css? how about cview compile::css, same for js? cview::compile::js ?? ooh shit
-
-BUGS
-
-[x] need to make :default => nil work
+[ ] automated rails inlcludes (i.e. dispatch prepare, mixin helpers, plugin)
+[ ] scoped render (i.e. render 'layout', :scope => 'flashden' will render 'flashden/layout')
+[ ] friendly exceptions on method_missing w/ chain of responsibility trickling
+[ ] load path into module scope (i.e. load('some/path', :scope => FlashDen::Views))
+[ ] redo tests in rspec
+[ ] refactoring makes martin fowler proud
+[ ] readme for the masses
+[ ] blog so...
+[ ] ... blog post for the masses
+[ ] every template has it's own css?
+[ ] every template has its own js?
