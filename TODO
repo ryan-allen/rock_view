@@ -9,3 +9,11 @@
 [ ] ... blog post for the masses
 [ ] every template has it's own css?
 [ ] every template has its own js?
+[ ] fix this error:
+      vendor/rails/activesupport/lib/active_support/dependencies.rb:477:in `const_missing': uninitialized constant Page::Interviews
+      RAILS_ROOT: script/../config/..
+      Application Trace | Framework Trace | Full Trace
+      vendor/cview/cview.rb:208:in `create_class'
+      (eval):1:in `create_class'
+      /Users/ryan/development/flashden/march11/config/environment.rb:93:in `LOAD_SITE_CONFIG'
+      /Users/ryan/development/flashden/march11/config/environment.rb:120
