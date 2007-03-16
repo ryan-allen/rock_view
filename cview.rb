@@ -168,7 +168,8 @@ module CView
     
     class << self
       
-      def load(path)
+      def load(path, scope = nil)
+        @scope = scope
         traverse(path)
       end
       
@@ -205,11 +206,17 @@ module CView
       end
 
       def create_class(path)
-        Object.class_eval("class #{path.gsub(/\.\w+$/, '').classify} < CView::Template; end")
+        Object.class_eval("class #{@scope ? "#{@scope}::" : nil}#{path.gsub(/\.\w+$/, '').classify} < CView::Template; end")
       end
       
       def get_class(path)
-        path.gsub(/\.\w+$/, '').classify.constantize
+        klass_str = path.gsub(/\.\w+$/, '').classify
+        if @scope
+          "#{@scope}::#{klass_str}".constantize
+        else
+          klass_str.constantize
+        end
+        
       end
             
     end

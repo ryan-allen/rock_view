@@ -33,5 +33,14 @@ class LoaderTest < Test::Unit::TestCase
     user = CView::Template.resolve('user').new(:user => 'Collis')
     assert_equal 'User is Collis!', user.to_s
   end
+  
+  def test_can_load_into_module_scope
+    CView.reset!
+    Object.class_eval('module View; end')
+    CView::Loader.load("#{File.dirname(__FILE__)}/templates_to_load", View)
+    assert View::Item
+    assert View::NoMethod
+    assert View::User
+  end
     
 end

@@ -1,14 +1,42 @@
-[ ] automated rails inlcludes (i.e. dispatch prepare, mixin helpers, plugin)
+IMPORTANT
+
+[ ] rename to Rock::View
+[ ] change loader to use this format
+<% assigns :one, :two, :three %>
+<% template do %>
+  blah blah blah
+  <%= one %>
+  <%= two %>
+  <%= three %>
+  this means we have to make loader load rhtml files only, and allow template method to set 
+  template from return value of the block (which means we have to run erb on context of class
+  when loading...)
+<% end %>
+
+[ ] the two below are related and fix this conflict: `const_missing': uninitialized constant Cash::Pages
 [ ] scoped render (i.e. render 'layout', :scope => 'flashden' will render 'flashden/layout')
+[x] load path into module scope (i.e. load('some/path', :scope => FlashDen::Views))
+
+IDEAL
+
+[ ] automated rails inlcludes (i.e. dispatch prepare, mixin helpers, plugin)
 [ ] friendly exceptions on method_missing w/ chain of responsibility trickling
-[ ] load path into module scope (i.e. load('some/path', :scope => FlashDen::Views))
+
+QUALITY / DISTRIBUTION
+
 [ ] redo tests in rspec
 [ ] refactoring makes martin fowler proud
 [ ] readme for the masses
 [ ] blog so...
 [ ] ... blog post for the masses
+
+MISC
+
 [ ] every template has it's own css?
 [ ] every template has its own js?
+
+BUGS / UNKNOWN
+
 [ ] fix this error:
       vendor/rails/activesupport/lib/active_support/dependencies.rb:477:in `const_missing': uninitialized constant Page::Interviews
       RAILS_ROOT: script/../config/..
