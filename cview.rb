@@ -11,9 +11,14 @@ module CView
       DSL.construct(&renders)
     end
     
+    def render_scope=(scope)
+      Template.render_scope = scope
+    end
+    
     def reset!
       templates_to_remove = Object.subclasses_of(Template) - [DSL]
       Object.remove_class(*templates_to_remove)
+      Template.render_scope = nil
     end
     
   end
@@ -24,6 +29,10 @@ module CView
     class UnexpectedAssignException < Exception; end
 
     class << self
+      
+      def render_scope=(scope)
+        @@render_scope = scope
+      end
 
       def template(erb = nil)
         if erb
@@ -37,7 +46,11 @@ module CView
       end
       
       def resolve(path)
-        path.classify.constantize
+        if @@render_scope
+          "#{@@render_scope}::#{path.classify}".constantize
+        else
+          path.classify.constantize
+        end
       rescue NameError
         nil
       end

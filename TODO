@@ -13,8 +13,8 @@ IMPORTANT
   when loading...)
 <% end %>
 
-[ ] the two below are related and fix this conflict: `const_missing': uninitialized constant Cash::Pages
-[ ] scoped render (i.e. render 'layout', :scope => 'flashden' will render 'flashden/layout')
+[x] the two below are related and fix this conflict: `const_missing': uninitialized constant Cash::Pages
+[x] scoped render (i.e. render 'layout', :scope => 'flashden' will render 'flashden/layout')
 [x] load path into module scope (i.e. load('some/path', :scope => FlashDen::Views))
 
 IDEAL
@@ -24,7 +24,7 @@ IDEAL
 
 QUALITY / DISTRIBUTION
 
-[ ] redo tests in rspec
+[ ] redo tests in rspec (they need to be properly factored, dsl test is testing some behaviour implicitly)
 [ ] refactoring makes martin fowler proud
 [ ] readme for the masses
 [ ] blog so...

@@ -16,10 +16,11 @@ class DSLTest < Test::Unit::TestCase
   end
   
   def test_dsl
+    CView.render_scope = Site
     result = CView.construct do
-      render 'site/layout' do
-        render 'site/page', :domain => 'yeahnah.org'
-        render 'site/footer', :contact => "<%= 'RYan@yeahnah.ORG'.downcase %>"
+      render 'layout' do
+        render 'page', :domain => 'yeahnah.org'
+        render 'footer', :contact => "<%= 'RYan@yeahnah.ORG'.downcase %>"
       end
     end
     assert_equal "<html><h1>YEAHNAH.ORG</html><div id=\"content\">Welcome to yeahnah.org!</div><div id=\"sidebar\">I AM SIDEBAR!</div><div id=\"footer\"><%= 'RYan@yeahnah.ORG'.downcase %></div></html>", result
