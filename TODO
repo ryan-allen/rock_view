@@ -12,7 +12,8 @@ IMPORTANT
   template from return value of the block (which means we have to run erb on context of class
   when loading...)
 <% end %>
-[ ] figure out an alternative to the above todo that we can't do! :(
+[x] figure out an alternative to the above todo that we can't do! :(
+[x] done it!!!
 
 [x] the two below are related and fix this conflict: `const_missing': uninitialized constant Cash::Pages
 [x] scoped render (i.e. render 'layout', :scope => 'flashden' will render 'flashden/layout')

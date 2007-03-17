@@ -211,8 +211,8 @@ module CView
         case $1
         when '.rb'
           get_class(path).class_eval { eval(Pathname.new(full_path).open('r') { |f| f.read }) }
-        when '.rhtml'
-          get_class(path).template Pathname.new(full_path).open('r') { |f| f.read }
+        # when '.rhtml'
+        #   get_class(path).template Pathname.new(full_path).open('r') { |f| f.read }
         else
           raise "Can't Handle: #{$1.inspect} #{full_path.inspect}"
         end  

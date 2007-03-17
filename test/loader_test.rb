@@ -31,7 +31,7 @@ class LoaderTest < Test::Unit::TestCase
   
   def test_sets_template_from_rhtml
     user = CView::Template.resolve('user').new(:user => 'Collis')
-    assert_equal 'User is Collis!', user.to_s
+    assert_equal "User is Collis!\n", user.to_s
   end
   
   def test_can_load_into_module_scope
