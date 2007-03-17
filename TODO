@@ -1,27 +1,14 @@
 IMPORTANT
 
 [ ] rename to Rock::View
-[x] change loader to use this format CAN'T DO THIS!!! SHITE
-<% assigns :one, :two, :three %>
-<% template do %>
-  blah blah blah
-  <%= one %>
-  <%= two %>
-  <%= three %>
-  this means we have to make loader load rhtml files only, and allow template method to set 
-  template from return value of the block (which means we have to run erb on context of class
-  when loading...)
-<% end %>
-[x] figure out an alternative to the above todo that we can't do! :(
-[x] done it!!!
-
-[x] the two below are related and fix this conflict: `const_missing': uninitialized constant Cash::Pages
-[x] scoped render (i.e. render 'layout', :scope => 'flashden' will render 'flashden/layout')
-[x] load path into module scope (i.e. load('some/path', :scope => FlashDen::Views))
+[ ] remove dependency on active_support
+[ ] allow arbitrary paths, (i.e. plurals) like 'views/article/pages/posts'
+[ ] more efficient reloading of files in dev mode (see camping's reloader for ideas)
+[ ] change assigns to create assign= methods, so we can alias them :)
 
 IDEAL
 
-[ ] automated rails inlcludes (i.e. dispatch prepare, mixin helpers, plugin)
+[ ] automated rails includes (i.e. dispatch prepare, mixin helpers, plugin)
 [ ] friendly exceptions on method_missing w/ chain of responsibility trickling
 
 QUALITY / DISTRIBUTION
@@ -36,6 +23,7 @@ MISC
 
 [ ] every template has it's own css?
 [ ] every template has its own js?
+[ ] take all these js/css and compile into one file automatically?
 
 BUGS / UNKNOWN
 
@@ -47,3 +35,9 @@ BUGS / UNKNOWN
       (eval):1:in `create_class'
       /Users/ryan/development/flashden/march11/config/environment.rb:93:in `LOAD_SITE_CONFIG'
       /Users/ryan/development/flashden/march11/config/environment.rb:120
+      
+[ ] the above might have something to do with how rails automagically creates
+    modules/constants and whatnot i.e. View::Something::Blah will be alrighty if
+    View::Something is not defined?
+    
+   
