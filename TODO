@@ -40,4 +40,6 @@ BUGS / UNKNOWN
     modules/constants and whatnot i.e. View::Something::Blah will be alrighty if
     View::Something is not defined?
     
+[ ] testing a commit
+    
    
