@@ -42,5 +42,9 @@ class LoaderTest < Test::Unit::TestCase
     assert View::NoMethod
     assert View::User
   end
+  
+  def test_can_have_modules_inside_classes
+    assert_equal 'hi', Item::InnerModule.hi
+  end
     
 end
