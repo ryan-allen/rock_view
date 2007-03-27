@@ -10,6 +10,9 @@ IDEAL
 
 [ ] automated rails includes (i.e. dispatch prepare, mixin helpers, plugin)
 [ ] friendly exceptions on method_missing w/ chain of responsibility trickling
+[ ] i.e. make this error raise proper w/ ERB like rails does: 
+    NoMethodError in New userController#profile
+    undefined method `user' for #<CView::DSL:0x2e24b87c>
 
 QUALITY / DISTRIBUTION
 
@@ -34,12 +37,10 @@ BUGS / UNKNOWN
       vendor/cview/cview.rb:208:in `create_class'
       (eval):1:in `create_class'
       /Users/ryan/development/flashden/march11/config/environment.rb:93:in `LOAD_SITE_CONFIG'
-      /Users/ryan/development/flashden/march11/config/environment.rb:120
-      
+      /Users/ryan/development/flashden/march11/config/environment.rb:120      
 [ ] the above might have something to do with how rails automagically creates
     modules/constants and whatnot i.e. View::Something::Blah will be alrighty if
     View::Something is not defined?
-    
-[ ] testing a commit
+[ ] oh and one remedy of the above is to change the loading scheme with a different reloader or something...
     
    
