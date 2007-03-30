@@ -8,6 +8,7 @@ require 'cview'
 class DSLTest < Test::Unit::TestCase
   
   def setup
+    CView.reset!
     load "#{File.dirname(__FILE__)}/dsl_test_templates.rb"
   end
   
@@ -16,7 +17,7 @@ class DSLTest < Test::Unit::TestCase
   end
   
   def test_dsl
-    CView.render_scope = Site
+    CView.render_scope = 'site'
     result = CView.construct do
       render 'layout' do
         render 'page', :domain => 'yeahnah.org'

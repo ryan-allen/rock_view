@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'active_support'
+# require 'active_support'
 require 'erb'
 require 'pathname'
 
@@ -16,9 +16,9 @@ module CView
     end
     
     def reset!
-      templates_to_remove = Object.subclasses_of(Template) - [DSL]
-      Object.remove_class(*templates_to_remove)
-      Template.render_scope = nil
+      # templates_to_remove = Object.subclasses_of(Template) - [DSL]
+      # Object.remove_class(*templates_to_remove)
+      Template.reset!
     end
     
   end
@@ -28,7 +28,17 @@ module CView
     class MissingAssignException < Exception; end
     class UnexpectedAssignException < Exception; end
 
+    @@template_map = {}
+    @@render_scope = nil
+    @@template = {}
+
     class << self
+      
+      def reset!
+        @@template_map = {}
+        @@render_scope = nil
+        @@template ||= {}
+      end
       
       def render_scope=(scope)
         @@render_scope = scope
@@ -36,7 +46,6 @@ module CView
 
       def template(erb = nil)
         if erb
-          @@template||= {}
           @@template[self] = erb
         else
           for klass in superclasses_with_self
@@ -46,17 +55,17 @@ module CView
       end
       
       def resolve(path)
-        if @@render_scope
-          "#{@@render_scope}::#{path.classify}".constantize
-        else
-          path.classify.constantize
-        end
-      rescue NameError
-        nil
+        @@render_scope ? @@template_map["#{@@render_scope}/#{path}"] : @@template_map[path]
+      end
+      
+      def create(path, &blk)
+        @@template_map[path] = self.clone
+        @@template_map[path].instance_eval(&blk) if blk
       end
       
       def superclasses_with_self
-        superclass.respond_to?(:superclasses_with_self) ? [self] + superclass.superclasses_with_self : [Template]
+        [self, Template]
+        #superclass.respond_to?(:superclasses_with_self) ? [self] + superclass.superclasses_with_self : [Template]
       end
               
       def assign(name, opts = {})
@@ -206,30 +215,24 @@ module CView
       end
 
       def handle(path, full_path)
-        create_class(path)
+        
         /(\.\w+)$/ =~ path
         case $1
         when '.rb'
-          get_class(path).class_eval { eval(Pathname.new(full_path).open('r') { |f| f.read }) }
-        when '.rhtml'
-          # ...
+          template_path = path[0..-4]
+          create_class(template_path)
+          get_class(template_path).class_eval { eval(Pathname.new(full_path).open('r') { |f| f.read }) }
         else
           raise "Can't Handle: #{$1.inspect} #{full_path.inspect}"
         end  
       end
 
       def create_class(path)
-        Object.class_eval("class #{@scope ? "#{@scope}::" : nil}#{path.gsub(/\.\w+$/, '').classify} < CView::Template; end")
+        Template.create(path)
       end
       
       def get_class(path)
-        klass_str = path.gsub(/\.\w+$/, '').classify
-        if @scope
-          "#{@scope}::#{klass_str}".constantize
-        else
-          klass_str.constantize
-        end
-        
+        Template.resolve(path)
       end
             
     end
