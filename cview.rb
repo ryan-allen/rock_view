@@ -215,7 +215,7 @@ module CView
           create_class(template_path)
           get_class(template_path).class_eval { eval(Pathname.new(full_path).open('r') { |f| f.read }) }
         else
-          raise "Can't Handle: #{$1.inspect} #{full_path.inspect}"
+          # raise "Can't Handle: #{$1.inspect} #{full_path.inspect}"
         end  
       end
 
