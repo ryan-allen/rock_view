@@ -2,6 +2,8 @@ $: << "#{File.dirname(__FILE__)}/.."
 require 'test/unit'
 require 'cview'
 
+## THIS COMMENT IS OUT OF DATE!
+
 # loader loads and construct views from a path, i.e. if you go CView::Loader.load('./views')
 # it will for example, take item.rb and item.rhtml and make a class called Item, running item.rb
 # in context of the class and setting the template class var to string content of item.rhtml
@@ -10,7 +12,6 @@ require 'cview'
 class LoaderTest < Test::Unit::TestCase
   
   def setup
-    CView.reset!
     CView::Loader.load("#{File.dirname(__FILE__)}/templates_to_load")
   end
   
@@ -22,9 +23,6 @@ class LoaderTest < Test::Unit::TestCase
     assert_not_nil CView::Template.resolve('item')
     assert_not_nil CView::Template.resolve('no_method')
     assert_not_nil CView::Template.resolve('user')
-    # assert_equal Item, CView::Template.resolve('item')
-    # assert_equal NoMethod, CView::Template.resolve('no_methods')
-    # assert_equal User, CView::Template.resolve('user')
   end
   
   def test_includes_methods_from_rb
@@ -45,9 +43,6 @@ class LoaderTest < Test::Unit::TestCase
     assert_not_nil CView::Template.resolve('view/item')
     assert_not_nil CView::Template.resolve('view/no_method')
     assert_not_nil CView::Template.resolve('view/user')
-    # assert View::Item
-    # assert View::NoMethod
-    # assert View::User
   end
   
   def test_can_have_modules_inside_classes

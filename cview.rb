@@ -1,5 +1,3 @@
-require 'rubygems'
-# require 'active_support'
 require 'erb'
 require 'pathname'
 
@@ -16,8 +14,6 @@ module CView
     end
     
     def reset!
-      # templates_to_remove = Object.subclasses_of(Template) - [DSL]
-      # Object.remove_class(*templates_to_remove)
       Template.reset!
     end
     
@@ -28,16 +24,12 @@ module CView
     class MissingAssignException < Exception; end
     class UnexpectedAssignException < Exception; end
 
-    @@template_map = {}
-    @@render_scope = nil
-    @@template = {}
-
     class << self
       
       def reset!
         @@template_map = {}
         @@render_scope = nil
-        @@template ||= {}
+        @@template = {}
       end
       
       def render_scope=(scope)
@@ -65,7 +57,6 @@ module CView
       
       def superclasses_with_self
         [self, Template]
-        #superclass.respond_to?(:superclasses_with_self) ? [self] + superclass.superclasses_with_self : [Template]
       end
               
       def assign(name, opts = {})
@@ -82,6 +73,8 @@ module CView
       def expectations; @expectations ||= {}; end
       
     end
+    
+    reset!
     
     attr_accessor :parent
     attr_reader :sub_templates
@@ -191,8 +184,7 @@ module CView
     class << self
       
       def load(path, scope = nil)
-        @scope = scope
-        traverse(path)
+        traverse(path, scope)
       end
       
     private

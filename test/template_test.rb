@@ -11,7 +11,6 @@ require 'cview'
 class TemplateTest < Test::Unit::TestCase
   
   def setup
-    CView.reset!
     load "#{File.dirname(__FILE__)}/template_test_templates.rb"
   end
   
@@ -21,21 +20,15 @@ class TemplateTest < Test::Unit::TestCase
   
   def test_reset_removes_template_constants
     assert_not_nil CView::Template.resolve('greeter'), 'Greeter should be defined'
-    # assert_not_nil CView::Template.resolve('dsl'), 'DSL should be defined'
     CView.reset!
     assert_nil CView::Template.resolve('greeter'), 'Greeter should NOT be defined'
-    # assert defined?(CView::DSL), 'DSL should still be defined'
   end
   
   def test_can_get_raw_erb_from_template
     assert_equal 'Hello <%= name %>.', CView::Template.resolve('greeter').template
     assert_equal 'Piss off <%= name %>!', CView::Template.resolve('rude_greeter').template
   end
-  
-  # def test_template_is_inherited_by_subclasses
-  #   assert_equal 'Hello <%= name %>.', BetterGreeter.template
-  # end
-  
+    
   def test_assigns_have_accessors_and_are_created_with_hash
     template = CView::Template.resolve('person').new(:name => 'Ryan')
     assert_equal 'Ryan', template.name
@@ -65,15 +58,7 @@ class TemplateTest < Test::Unit::TestCase
   def test_to_s_evaluates_erb_template
     assert_equal 'Hello George.', CView::Template.resolve('greeter').new(:name => 'George').to_s
   end
-  
-  # def test_resolve_with_string_returns_template_class
-  #   assert_equal Greeter, CView::Template.resolve('greeter')
-  # end
-
-  # def test_resolve_with_string_returns_template_class_inside_modules
-  #   assert_equal Sub::Page, CView::Template.resolve('sub/page')
-  # end
-  
+    
   def test_resolve_returns_nil_on_missing_template
     assert_nil CView::Template.resolve('bogus/template')
   end
