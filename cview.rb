@@ -1,5 +1,6 @@
 require 'erb'
 require 'pathname'
+require 'rock_view' # here only to raise proper exceptions
 
 module CView
   
@@ -21,9 +22,6 @@ module CView
   
   class Template
     
-    class MissingAssignException < Exception; end
-    class UnexpectedAssignException < Exception; end
-
     class << self
       
       def reset!
@@ -137,9 +135,9 @@ module CView
       missing_assigns = self.class.assigns.select { |name| send(name).nil? and not self.class.defaults.has_key?(name) }
       unexpected_assigns = self.class.expectations.select { |name, values| !values.include?(send(name)) }
       if not missing_assigns.empty?
-        raise MissingAssignException.new("#{self.class} was missing the following assigns: #{missing_assigns.join(', ')}")        
+        raise Rock::View::MissingAssignException.new("#{self.class} was missing the following assigns: #{missing_assigns.join(', ')}")        
       elsif not unexpected_assigns.empty?
-        raise UnexpectedAssignException.new("Aie!")        
+        raise Rock::View::UnexpectedAssignException.new("Aie!")        
       else
         erb(template)
       end

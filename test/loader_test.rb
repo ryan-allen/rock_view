@@ -1,6 +1,6 @@
 $: << "#{File.dirname(__FILE__)}/.."
 require 'test/unit'
-require 'cview'
+require 'rock_view'
 
 ## THIS COMMENT IS OUT OF DATE!
 
@@ -12,11 +12,11 @@ require 'cview'
 class LoaderTest < Test::Unit::TestCase
   
   def setup
-    CView::Loader.load("#{File.dirname(__FILE__)}/templates_to_load")
+    Rock::View.load("#{File.dirname(__FILE__)}/templates_to_load")
   end
   
   def teardown
-    CView.reset!
+    Rock::View.reset!
   end
   
   def test_generates_classes

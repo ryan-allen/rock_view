@@ -1,8 +1,25 @@
+REFACTORING
+
+[ ] fix up internals (w/ spec and template)
+[ ] alias Rock::View & implement tests
+[ ] refactor to Rock::View
+
+Rock::View.specify 'some/path' do
+  assigns :one, :two, :three
+  template 'some html w/ erb in here'
+end
+
+Rock::View.construct do
+  render 'layout', :heading => 'hi' do
+    render 'page' :content => 'something...'
+  end
+end
+
 IMPORTANT
 
 [ ] rename to Rock::View
-[ ] remove dependency on active_support
-[ ] allow arbitrary paths, (i.e. plurals) like 'views/article/pages/posts'
+[x] remove dependency on active_support
+[x] allow arbitrary paths, (i.e. plurals) like 'views/article/pages/posts'
 [ ] more efficient reloading of files in dev mode (see camping's reloader for ideas)
 [ ] change assigns to create assign= methods, so we can alias them :)
 

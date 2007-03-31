@@ -8,17 +8,40 @@ require 'cview'
 class DSLTest < Test::Unit::TestCase
   
   def setup
-    CView.reset!
-    load "#{File.dirname(__FILE__)}/dsl_test_templates.rb"
+    Rock::View.specify 'site/layout' do
+      def reformat_heading
+        domain.upcase
+      end
+      assigns :domain
+      template "<html><%= render 'heading', :heading => domain.upcase %><%= render_sub_templates %></html>"
+    end
+
+    Rock::View.specify 'site/heading' do
+      assigns :heading
+      template '<h1><%= heading %></html>'
+    end
+
+    Rock::View.specify 'site/sidebar' do
+      template '<div id="sidebar"><%= render_sub_templates %></div>'
+    end
+
+    Rock::View.specify 'site/page' do
+      template '<div id="content">Welcome to <%= domain %>!</div><% render \'sidebar\' do %>I AM SIDEBAR!<% end %>'
+    end
+
+    Rock::View.specify 'site/footer' do
+      assigns :contact
+      template '<div id="footer"><%= contact %></div>'
+    end
   end
   
   def teardown
-    CView.reset!
+    Rock::View.reset!
   end
   
   def test_dsl
-    CView.render_scope = 'site'
-    result = CView.construct do
+    Rock::View.render_scope = 'site'
+    result = Rock::View.construct do
       render 'layout' do
         render 'page', :domain => 'yeahnah.org'
         render 'footer', :contact => "<%= 'RYan@yeahnah.ORG'.downcase %>"
