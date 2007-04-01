@@ -8,7 +8,7 @@ require 'rock_view'
 class DSLTest < Test::Unit::TestCase
   
   def setup
-    Rock::View.specify 'site/layout' do
+    Rock::View.specify 'layout' do
       def reformat_heading
         domain.upcase
       end
@@ -16,20 +16,20 @@ class DSLTest < Test::Unit::TestCase
       template "<html><%= render 'heading', :heading => domain.upcase %><%= render_sub_templates %></html>"
     end
 
-    Rock::View.specify 'site/heading' do
+    Rock::View.specify 'heading' do
       assigns :heading
       template '<h1><%= heading %></html>'
     end
 
-    Rock::View.specify 'site/sidebar' do
+    Rock::View.specify 'sidebar' do
       template '<div id="sidebar"><%= render_sub_templates %></div>'
     end
 
-    Rock::View.specify 'site/page' do
+    Rock::View.specify 'page' do
       template '<div id="content">Welcome to <%= domain %>!</div><% render \'sidebar\' do %>I AM SIDEBAR!<% end %>'
     end
 
-    Rock::View.specify 'site/footer' do
+    Rock::View.specify 'footer' do
       assigns :contact
       template '<div id="footer"><%= contact %></div>'
     end
@@ -40,7 +40,6 @@ class DSLTest < Test::Unit::TestCase
   end
   
   def test_dsl
-    Rock::View.render_scope = 'site'
     result = Rock::View.construct do
       render 'layout' do
         render 'page', :domain => 'yeahnah.org'
