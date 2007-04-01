@@ -2,6 +2,46 @@ require 'erb'
 require 'pathname'
 require 'rock_view' # here only to raise proper exceptions
 
+module Rock
+  module View
+    
+    class MissingAssignException < Exception; end
+    class UnexpectedAssignException < Exception; end
+,
+    class << self
+      
+      # delegate to Repository
+      def specify(*args, &block)
+        CView::Template.create(*args, &block)
+      end
+      
+      # delegate to Builder
+      def construct(*args, &block)
+        CView::DSL.construct(*args, &block)
+      end
+      
+      # delegate to Repository
+      def resolve(*args)
+        CView::Template.resolve(*args)
+      end
+      
+      # deprecate this
+      def render_scope=(val)
+        CView::Template.render_scope = val
+      end
+      
+      def reset!
+        CView::Template.reset!
+      end
+      
+      def load(*args)
+        CView::Loader.load(*args)
+      end
+      
+    end
+  end
+end
+
 module CView
   
   class << self
