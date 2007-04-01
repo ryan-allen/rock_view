@@ -7,7 +7,7 @@ module CView
   class << self
     
     def construct(&renders)
-      DSL.construct(&renders)
+      Builder.construct(&renders)
     end
     
     def render_scope=(scope)
@@ -15,9 +15,54 @@ module CView
     end
     
     def reset!
-      Template.reset!
+      Repository.reset!
     end
     
+  end
+  
+  module Builder
+    class << self
+      def construct(&renders)
+        DSL.construct(&renders)
+      end
+    end
+  end
+  
+  class Spec
+    attr_reader :assigns, :template, :defaults, :expectations
+    def initialize(template, assigns, defaults, expectations)
+      @template = template
+      @assigns = assigns
+      @defaults = defaults
+      @expectations = expectations
+    end
+  end
+  
+  class View
+    attr_reader :spec, :assign_values, :parent, :sub_templates
+    def initialize(spec, assign_values, parent = nil)
+      @spec = spec
+      @assign_values = @assign_values
+      @sub_templates = []
+      if parent
+        @parent = parent
+        parent.sub_templates << self
+      end
+    end
+    def to_s
+    end
+  end
+  
+  module Repository
+    class << self
+      def reset!
+        @specs = {}
+      end
+      def resolve(path)
+        @specs[path]
+      end
+    end
+    reset!
   end
   
   class Template

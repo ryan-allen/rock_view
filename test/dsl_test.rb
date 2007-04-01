@@ -1,6 +1,6 @@
 $: << "#{File.dirname(__FILE__)}/.."
 require 'test/unit'
-require 'cview'
+require 'rock_view'
 
 # dsl implements the render dsl that we use that almost exactly mimicks
 # usage with the actual class instanciation stuff, so only a small amount
