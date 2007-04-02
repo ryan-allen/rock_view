@@ -15,7 +15,7 @@ module Rock
       end
       
       def construct(*args, &block)
-        DSL.construct(*args, &block)
+        Builder.construct(*args, &block)
       end
       
       def resolve(*args)
@@ -82,6 +82,7 @@ module Rock
         def specify(path, &config)
           @map[path] = Template.clone
           @map[path].instance_eval(&config)
+          @map[path]
         end
         
         def resolve(path)
@@ -223,14 +224,12 @@ module Rock
     
     end
   
-    class DSL < Template
-        
-      template '<%= render_sub_templates %>'
-        
+    module Builder
+              
       class << self
       
         def construct(&renders)
-          @scope = [self.new]
+          @scope = [Repo.specify('Builder Context') { template '<%= render_sub_templates %>' }.new]
           instance_eval(&renders)
           @scope.first.to_s
         end
