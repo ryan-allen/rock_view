@@ -81,7 +81,7 @@ module Rock
       class << self
         def specify(path, &config)
           @map[path] = Template.clone
-          @map[path].instance_eval(&config)
+          @map[path].class_eval(&config)
           @map[path]
         end
         
@@ -263,7 +263,6 @@ module Rock
             next if entry[0].chr == '.'
             full_path = "#{path}/#{entry}"
             if File.directory?(full_path)
-              create_class(generate_scope(scope, entry))
               traverse(full_path, generate_scope(scope, entry))
             else
               handle(generate_scope(scope, entry), full_path)
@@ -276,24 +275,14 @@ module Rock
         end
 
         def handle(path, full_path)
-        
           /(\.\w+)$/ =~ path
           case $1
           when '.rb'
             template_path = path[0..-4]
-            create_class(template_path)
-            get_class(template_path).class_eval { eval(Pathname.new(full_path).open('r') { |f| f.read }) }
+            Repo.specify(template_path) { eval(Pathname.new(full_path).open('r') { |f| f.read }) }
           else
-            # raise "Can't Handle: #{$1.inspect} #{full_path.inspect}"
+            # do something here to complain about unhandled filetypes
           end  
-        end
-
-        def create_class(path)
-          Repo.specify(path) { }
-        end
-      
-        def get_class(path)
-          Repo.resolve(path)
         end
             
       end
