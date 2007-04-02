@@ -1,6 +1,5 @@
 require 'erb'
 require 'pathname'
-require 'rock_view' # here only to raise proper exceptions (hehe not for long!)
 
 module Rock
   module View
