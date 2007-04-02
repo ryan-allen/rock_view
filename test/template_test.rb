@@ -61,7 +61,6 @@ class TemplateTest < Test::Unit::TestCase
 
     Rock::View.specify 'assign_default_is_nil' do
       assign :is_nil, :default => nil
-      template '<%= inspect %>'
     end
   end
   

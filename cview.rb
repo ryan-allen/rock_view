@@ -30,39 +30,39 @@ module Rock
       end
     end
 
-    class Spec
-      attr_reader :assigns, :template, :defaults, :expectations
-
-      def initialize
-        @template, @assigns, @defaults, @expectations = '<%= inspect %>', [], {}, {}
-      end
-
-      def template(erb = nil)
-        erb ? @template = erb : @template
-      end
-                
-      def assign(name, opts = {})
-        assigns << name
-        defaults[name] = opts[:default] if opts.has_key?(:default)
-        expectations[name] = opts[:expects] if opts[:expects]
-      end
-    
-      def assigns(*names)
-        names.empty? ? @assigns : names.each { |name| assign name }
-      end    
-    end
-    
-    class Base
-      attr_reader :spec, :assign_values, :parent, :sub_templates
-      
-      def initialize(spec, assign_values, parent = nil)
-        @spec, @assign_values, @sub_templates = spec, assign_values, []
-        if parent
-          @parent = parent
-          parent.sub_templates << self
-        end
-      end
-    end
+    # class Spec
+    #   attr_reader :assigns, :template, :defaults, :expectations
+    # 
+    #   def initialize
+    #     @template, @assigns, @defaults, @expectations = '<%= inspect %>', [], {}, {}
+    #   end
+    # 
+    #   def template(erb = nil)
+    #     erb ? @template = erb : @template
+    #   end
+    #             
+    #   def assign(name, opts = {})
+    #     assigns << name
+    #     defaults[name] = opts[:default] if opts.has_key?(:default)
+    #     expectations[name] = opts[:expects] if opts[:expects]
+    #   end
+    # 
+    #   def assigns(*names)
+    #     names.empty? ? @assigns : names.each { |name| assign name }
+    #   end    
+    # end
+    # 
+    # class Base
+    #   attr_reader :spec, :assign_values, :parent, :sub_templates
+    #   
+    #   def initialize(spec, assign_values, parent = nil)
+    #     @spec, @assign_values, @sub_templates = spec, assign_values, []
+    #     if parent
+    #       @parent = parent
+    #       parent.sub_templates << self
+    #     end
+    #   end
+    # end
     
     module Repo
       class << self
@@ -105,10 +105,6 @@ module Rock
       
         def resolve(path)
           Repo.resolve(path)
-        end
-            
-        def superclasses_with_self
-          [self, Template]
         end
               
         def assign(name, opts = {})
