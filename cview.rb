@@ -11,7 +11,7 @@ module Rock
     class << self
       
       def specify(*args, &block)
-        Template.create(*args, &block)
+        Repo.specify(*args, &block)
       end
       
       def construct(*args, &block)
@@ -19,11 +19,11 @@ module Rock
       end
       
       def resolve(*args)
-        Template.resolve(*args)
+        Repo.resolve(*args)
       end
             
       def reset!
-        Template.reset!
+        Repo.reset!
       end
       
       def load(*args)
@@ -76,21 +76,34 @@ module Rock
     #   end
     #   reset!
     # end
-  
+    
+    module Repo
+      class << self
+        def specify(path, &config)
+          @map[path] = Template.clone
+          @map[path].instance_eval(&config)
+        end
+        
+        def resolve(path)
+          @map[path]
+        end
+        
+        def reset!
+          @map = {}
+        end
+      end
+      reset!
+    end
+      
     class Template
     
       class << self
       
         def reset!
-          @@template_map = {}
           @@render_scope = nil
           @@template = {}
         end
       
-        def render_scope=(scope)
-          @@render_scope = scope
-        end
-
         def template(erb = nil)
           if erb
             @@template[self] = erb
@@ -102,13 +115,15 @@ module Rock
         end
       
         def resolve(path)
-          @@render_scope ? @@template_map["#{@@render_scope}/#{path}"] : @@template_map[path]
+          Repo.resolve(path)
+          #@@render_scope ? @@template_map["#{@@render_scope}/#{path}"] : @@template_map[path]
         end
       
-        def create(path, &blk)
-          @@template_map[path] = self.clone
-          @@template_map[path].instance_eval(&blk) if blk
-        end
+        # def create(path, &blk)
+        #   Repo.
+        #   @@template_map[path] = self.clone
+        #   @@template_map[path].instance_eval(&blk) if blk
+        # end
       
         def superclasses_with_self
           [self, Template]
@@ -275,11 +290,11 @@ module Rock
         end
 
         def create_class(path)
-          Template.create(path)
+          Repo.specify(path) { }
         end
       
         def get_class(path)
-          Template.resolve(path)
+          Repo.resolve(path)
         end
             
       end
