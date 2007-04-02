@@ -54,10 +54,9 @@ module Rock
     
     class Base
       attr_reader :spec, :assign_values, :parent, :sub_templates
+      
       def initialize(spec, assign_values, parent = nil)
-        @spec = spec
-        @assign_values = @assign_values
-        @sub_templates = []
+        @spec, @assign_values, @sub_templates = spec, assign_values, []
         if parent
           @parent = parent
           parent.sub_templates << self
