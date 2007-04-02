@@ -67,7 +67,7 @@ module Rock
     module Repo
       class << self
         def specify(path, &config)
-          @map[path] = Template.clone # CHANGE THIS LINE TO CREATE A SPEC
+          @map[path] = Template.dup # CHANGE THIS LINE TO CREATE A SPEC
           @map[path].class_eval(&config)
           @map[path]
         end
@@ -86,20 +86,20 @@ module Rock
     class Template
     
       class << self
-
-        # this is an old REPO method
-        def reset!
-          @@template = {}
-        end
       
-        def template(erb = nil)
-          if erb
-            @@template[self] = erb
-          else
-            for klass in superclasses_with_self
-              return @@template[klass] if @@template[klass]
-            end
+        def dup
+          the_dup = super
+          the_dup.instance_eval do
+            @template = @template.dup if @template
+            @assigns = @assigns.dup if @assigns
+            @defaults = @defaults.dup if @defaults
+            @expectations = @expectations.dup if @expectations
           end
+          the_dup
+        end
+        
+        def template(erb = nil)
+          erb ? @template = erb : @template
         end
       
         def resolve(path)
@@ -125,7 +125,7 @@ module Rock
       
       end
     
-      reset!
+      
     
       attr_accessor :parent
       attr_reader :sub_templates
