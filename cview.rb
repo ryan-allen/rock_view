@@ -67,7 +67,7 @@ module Rock
     module Repo
       class << self
         def specify(path, &config)
-          @map[path] = Template.dup # CHANGE THIS LINE TO CREATE A SPEC
+          @map[path] = Template.clone
           @map[path].class_eval(&config)
           @map[path]
         end
@@ -87,15 +87,16 @@ module Rock
     
       class << self
       
-        def dup
-          the_dup = super
-          the_dup.instance_eval do
-            @template = @template.dup if @template
-            @assigns = @assigns.dup if @assigns
-            @defaults = @defaults.dup if @defaults
-            @expectations = @expectations.dup if @expectations
+        # not cloning these instance vars was causing problems!
+        def clone
+          the_clone = super
+          the_clone.instance_eval do
+            @template = @template.clone if @template
+            @assigns = @assigns.clone if @assigns
+            @defaults = @defaults.clone if @defaults
+            @expectations = @expectations.clone if @expectations
           end
-          the_dup
+          the_clone
         end
         
         def template(erb = nil)
@@ -124,8 +125,6 @@ module Rock
         def expectations; @expectations ||= {}; end
       
       end
-    
-      
     
       attr_accessor :parent
       attr_reader :sub_templates
