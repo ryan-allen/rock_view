@@ -1,6 +1,6 @@
 require 'erb'
 require 'pathname'
-require 'rock_view' # here only to raise proper exceptions
+require 'rock_view' # here only to raise proper exceptions (hehe not for long!)
 
 module Rock
   module View
@@ -9,7 +9,6 @@ module Rock
     class UnexpectedAssignException < Exception; end
 
     class << self
-      
       def specify(*args, &block)
         Repo.specify(*args, &block)
       end
@@ -29,58 +28,47 @@ module Rock
       def load(*args)
         Loader.load(*args)
       end
-      
     end
 
-    # module Builder
-    #   class << self
-    #     def construct(&renders)
-    #       DSL.construct(&renders)
-    #     end
-    #   end
-    # end
-    # 
-    # class Spec
-    #   attr_reader :assigns, :template, :defaults, :expectations
-    #   def initialize(template, assigns, defaults, expectations)
-    #     @template = template
-    #     @assigns = assigns
-    #     @defaults = defaults
-    #     @expectations = expectations
-    #   end
-    # end
-    # 
-    # class View
-    #   attr_reader :spec, :assign_values, :parent, :sub_templates
-    #   def initialize(spec, assign_values, parent = nil)
-    #     @spec = spec
-    #     @assign_values = @assign_values
-    #     @sub_templates = []
-    #     if parent
-    #       @parent = parent
-    #       parent.sub_templates << self
-    #     end
-    #   end
-    #   def to_s
-    #   end
-    # end
-    # 
-    # module Repository
-    #   class << self
-    #     def reset!
-    #       @specs = {}
-    #     end
-    #     def resolve(path)
-    #       @specs[path]
-    #     end
-    #   end
-    #   reset!
-    # end
+    class Spec
+      attr_reader :assigns, :template, :defaults, :expectations
+
+      def initialize
+        @template, @assigns, @defaults, @expectations = '<%= inspect %>', [], {}, {}
+      end
+
+      def template(erb = nil)
+        erb ? @template = erb : @template
+      end
+                
+      def assign(name, opts = {})
+        assigns << name
+        defaults[name] = opts[:default] if opts.has_key?(:default)
+        expectations[name] = opts[:expects] if opts[:expects]
+      end
+    
+      def assigns(*names)
+        names.empty? ? @assigns : names.each { |name| assign name }
+      end    
+    end
+    
+    class Base
+      attr_reader :spec, :assign_values, :parent, :sub_templates
+      def initialize(spec, assign_values, parent = nil)
+        @spec = spec
+        @assign_values = @assign_values
+        @sub_templates = []
+        if parent
+          @parent = parent
+          parent.sub_templates << self
+        end
+      end
+    end
     
     module Repo
       class << self
         def specify(path, &config)
-          @map[path] = Template.clone
+          @map[path] = Template.clone # CHANGE THIS LINE TO CREATE A SPEC
           @map[path].class_eval(&config)
           @map[path]
         end
@@ -94,14 +82,14 @@ module Rock
         end
       end
       reset!
-    end
+    end; Repository = Repo
       
     class Template
     
       class << self
-      
+
+        # this is an old REPO method
         def reset!
-          @@render_scope = nil
           @@template = {}
         end
       
@@ -117,15 +105,8 @@ module Rock
       
         def resolve(path)
           Repo.resolve(path)
-          #@@render_scope ? @@template_map["#{@@render_scope}/#{path}"] : @@template_map[path]
         end
-      
-        # def create(path, &blk)
-        #   Repo.
-        #   @@template_map[path] = self.clone
-        #   @@template_map[path].instance_eval(&blk) if blk
-        # end
-      
+            
         def superclasses_with_self
           [self, Template]
         end
@@ -208,9 +189,9 @@ module Rock
         missing_assigns = self.class.assigns.select { |name| send(name).nil? and not self.class.defaults.has_key?(name) }
         unexpected_assigns = self.class.expectations.select { |name, values| !values.include?(send(name)) }
         if not missing_assigns.empty?
-          raise Rock::View::MissingAssignException.new("#{self.class} was missing the following assigns: #{missing_assigns.join(', ')}")        
+          raise MissingAssignException.new("#{self.class} was missing the following assigns: #{missing_assigns.join(', ')}")        
         elsif not unexpected_assigns.empty?
-          raise Rock::View::UnexpectedAssignException.new("Aie!")        
+          raise UnexpectedAssignException.new("Aie!")        
         else
           erb(template)
         end
@@ -229,14 +210,15 @@ module Rock
       class << self
       
         def construct(&renders)
-          @scope = [Repo.specify('Builder Context') { template '<%= render_sub_templates %>' }.new]
+          @scope = [Repo.specify('Construct Context') { template '<%= render_sub_templates %>' }.new]
           instance_eval(&renders)
           @scope.first.to_s
         end
       
         def render(path, assigns = {}, &renders)
           template = Template.resolve(path).new(assigns, @scope.last)
-          template.parent = @scope.last; @scope.last.sub_templates << template # duplication here?
+          # THIS LINE WILL BE CHANGED BECAUSE IT WILL HANDLE ITSELF
+          template.parent = @scope.last; @scope.last.sub_templates << template
           if renders
             @scope << template
             instance_eval(&renders)
@@ -278,7 +260,7 @@ module Rock
           /(\.\w+)$/ =~ path
           case $1
           when '.rb'
-            template_path = path[0..-4]
+            template_path = path[0..-4] # take off the .rb
             Repo.specify(template_path) { eval(Pathname.new(full_path).open('r') { |f| f.read }) }
           else
             # do something here to complain about unhandled filetypes
