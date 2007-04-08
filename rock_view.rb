@@ -66,16 +66,22 @@ module Rock
     module Repo
       class << self
         def specify(path, &config)
-          @map[path] = Template.clone
-          @map[path].class_eval(&config)
-          @map[path]
+          @config[path] = config
+          true
         end
         
         def resolve(path)
-          @map[path]
+          if @map[path]
+            @map[path]
+          elsif @config[path]
+            @map[path] = Template.clone
+            @map[path].class_eval(&@config[path])
+            @map[path]
+          end
         end
         
         def reset!
+          @config = {}
           @map = {}
         end
       end
@@ -203,7 +209,8 @@ module Rock
       class << self
       
         def construct(&renders)
-          @scope = [Repo.specify('Construct Context') { template '<%= render_sub_templates %>' }.new]
+          Repo.specify('Construct Context') { template '<%= render_sub_templates %>' }
+          @scope = [Repo.resolve('Construct Context').new]
           instance_eval(&renders)
           @scope.first.to_s
         end

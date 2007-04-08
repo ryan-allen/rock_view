@@ -3,3 +3,5 @@ module self::InnerModule
     'hi'
   end
 end
+
+include Rock::View.resolve('user')::GdaySayer
