@@ -159,6 +159,7 @@ module Rock
             # no access to uh, parents or something...
             #
             template = klass.new(assigns)
+            template.parent = self # give template access to self... no tests for this yet...
             split = Template.new
             split.template = '##SPLIT##'
             split.parent = template; template.sub_templates << split
