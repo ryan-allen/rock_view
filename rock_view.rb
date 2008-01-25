@@ -1,5 +1,9 @@
 require 'erb'
 require 'pathname'
+require 'digest/md5'
+
+# require 'rubygems'
+# require 'erubis'
 
 module Rock
   module View
@@ -200,7 +204,22 @@ module Rock
     protected
   
       def erb(str)
-        ERB.new(str, nil, '<>').result(binding)
+        checksum = Digest::MD5.hexdigest(str)
+        unless self.respond_to?("run_compiled_template_#{checksum}".to_sym)
+          puts "Compiling Template w/ checksum: #{checksum}"
+          eval <<-rb
+            self.class.class_eval do
+              def run_compiled_template_#{checksum}
+                #{ERB.new(str, nil, '<>').src}
+              end
+            end
+          rb
+        end
+        send("run_compiled_template_#{checksum}".to_sym)
+      end
+      
+      def md5(str)
+        Digest::MD5.hexdigest(str)
       end
     
     end
