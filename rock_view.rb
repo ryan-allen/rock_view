@@ -206,7 +206,7 @@ module Rock
       def erb(str)
         checksum = Digest::MD5.hexdigest(str)
         unless self.respond_to?("run_compiled_template_#{checksum}".to_sym)
-          puts "Compiling Template w/ checksum: #{checksum}"
+          # puts "Compiling Template w/ checksum: #{checksum}"
           eval <<-rb
             self.class.class_eval do
               def run_compiled_template_#{checksum}
