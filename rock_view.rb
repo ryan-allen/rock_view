@@ -217,10 +217,6 @@ module Rock
         end
         send("run_compiled_template_#{checksum}".to_sym)
       end
-      
-      def md5(str)
-        Digest::MD5.hexdigest(str)
-      end
     
     end
   
